@@ -11,6 +11,7 @@ PD5 - (20Hz - 200Hz)
 PD6 - (200Hz- 2KHz)
 PD7 - (2kHz - 20kHz)
 
+
 */
 #define F_CPU 20000000UL //Se define que la frecuencia de trabajo es de 20 MHz,previamente configurado la utilizacion de un cristal en los fuses
 
