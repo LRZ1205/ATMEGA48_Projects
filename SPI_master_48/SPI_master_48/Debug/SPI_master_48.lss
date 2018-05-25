@@ -1,0 +1,150 @@
+
+SPI_master_48.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000000  00800100  00800100  000000de  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         0000008a  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .comment      00000030  00000000  00000000  000000de  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000110  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000030  00000000  00000000  0000014c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   0000076f  00000000  00000000  0000017c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000006d9  00000000  00000000  000008eb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000002c5  00000000  00000000  00000fc4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000044  00000000  00000000  0000128c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000003b3  00000000  00000000  000012d0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000001f  00000000  00000000  00001683  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000020  00000000  00000000  000016a2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	19 c0       	rjmp	.+50     	; 0x34 <__ctors_end>
+   2:	20 c0       	rjmp	.+64     	; 0x44 <__bad_interrupt>
+   4:	1f c0       	rjmp	.+62     	; 0x44 <__bad_interrupt>
+   6:	1e c0       	rjmp	.+60     	; 0x44 <__bad_interrupt>
+   8:	1d c0       	rjmp	.+58     	; 0x44 <__bad_interrupt>
+   a:	1c c0       	rjmp	.+56     	; 0x44 <__bad_interrupt>
+   c:	1b c0       	rjmp	.+54     	; 0x44 <__bad_interrupt>
+   e:	1a c0       	rjmp	.+52     	; 0x44 <__bad_interrupt>
+  10:	19 c0       	rjmp	.+50     	; 0x44 <__bad_interrupt>
+  12:	18 c0       	rjmp	.+48     	; 0x44 <__bad_interrupt>
+  14:	17 c0       	rjmp	.+46     	; 0x44 <__bad_interrupt>
+  16:	16 c0       	rjmp	.+44     	; 0x44 <__bad_interrupt>
+  18:	15 c0       	rjmp	.+42     	; 0x44 <__bad_interrupt>
+  1a:	14 c0       	rjmp	.+40     	; 0x44 <__bad_interrupt>
+  1c:	13 c0       	rjmp	.+38     	; 0x44 <__bad_interrupt>
+  1e:	12 c0       	rjmp	.+36     	; 0x44 <__bad_interrupt>
+  20:	11 c0       	rjmp	.+34     	; 0x44 <__bad_interrupt>
+  22:	10 c0       	rjmp	.+32     	; 0x44 <__bad_interrupt>
+  24:	0f c0       	rjmp	.+30     	; 0x44 <__bad_interrupt>
+  26:	0e c0       	rjmp	.+28     	; 0x44 <__bad_interrupt>
+  28:	0d c0       	rjmp	.+26     	; 0x44 <__bad_interrupt>
+  2a:	0c c0       	rjmp	.+24     	; 0x44 <__bad_interrupt>
+  2c:	0b c0       	rjmp	.+22     	; 0x44 <__bad_interrupt>
+  2e:	0a c0       	rjmp	.+20     	; 0x44 <__bad_interrupt>
+  30:	09 c0       	rjmp	.+18     	; 0x44 <__bad_interrupt>
+  32:	08 c0       	rjmp	.+16     	; 0x44 <__bad_interrupt>
+
+00000034 <__ctors_end>:
+  34:	11 24       	eor	r1, r1
+  36:	1f be       	out	0x3f, r1	; 63
+  38:	cf ef       	ldi	r28, 0xFF	; 255
+  3a:	d2 e0       	ldi	r29, 0x02	; 2
+  3c:	de bf       	out	0x3e, r29	; 62
+  3e:	cd bf       	out	0x3d, r28	; 61
+  40:	14 d0       	rcall	.+40     	; 0x6a <main>
+  42:	21 c0       	rjmp	.+66     	; 0x86 <_exit>
+
+00000044 <__bad_interrupt>:
+  44:	dd cf       	rjmp	.-70     	; 0x0 <__vectors>
+
+00000046 <SPI_init>:
+void SPI_init();
+void SPI_write(char dato);
+
+//Definicion de las funciones prototipo
+void SPI_init(){
+	DDRB|= (1<< MOSI)|(1<<SCK)|(1<<SS);
+  46:	84 b1       	in	r24, 0x04	; 4
+  48:	8c 62       	ori	r24, 0x2C	; 44
+  4a:	84 b9       	out	0x04, r24	; 4
+	DDRB&= ~(1<<MISO);
+  4c:	24 98       	cbi	0x04, 4	; 4
+	PORTB|= (1<<SS);
+  4e:	2a 9a       	sbi	0x05, 2	; 5
+	SPCR|=(1<<SPE) |(1<<MSTR)|(1<<SPR1);	//El modulo SPI esta activado, el primer dato transmitido es el LSB
+  50:	8c b5       	in	r24, 0x2c	; 44
+  52:	82 65       	ori	r24, 0x52	; 82
+  54:	8c bd       	out	0x2c, r24	; 44
+											//Seleccion del microcontrolador en modo master y la frecuencia del reloj es 20E6 / 32
+	SPSR|=(1<<SPI2X);
+  56:	8d b5       	in	r24, 0x2d	; 45
+  58:	81 60       	ori	r24, 0x01	; 1
+  5a:	8d bd       	out	0x2d, r24	; 45
+  5c:	08 95       	ret
+
+0000005e <SPI_write>:
+}
+
+void SPI_write(char dato){
+	char resp;
+	SPDR =dato; //Copia el dato que se insertara en main a SPDR
+  5e:	8e bd       	out	0x2e, r24	; 46
+	while(!(SPSR&(1<<SPIF))); //Espera a que se termine de transmitir
+  60:	0d b4       	in	r0, 0x2d	; 45
+  62:	07 fe       	sbrs	r0, 7
+  64:	fd cf       	rjmp	.-6      	; 0x60 <SPI_write+0x2>
+	resp = SPDR;
+  66:	8e b5       	in	r24, 0x2e	; 46
+  68:	08 95       	ret
+
+0000006a <main>:
+#include "SPI_master_48_config.h"
+
+
+int main(void)
+{
+   SPI_init();
+  6a:	ed df       	rcall	.-38     	; 0x46 <SPI_init>
+   SS_Enable;
+  6c:	2a 98       	cbi	0x05, 2	; 5
+    while (1) 
+    {
+		SPI_write('L');
+  6e:	8c e4       	ldi	r24, 0x4C	; 76
+  70:	f6 df       	rcall	.-20     	; 0x5e <SPI_write>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  72:	2f e3       	ldi	r18, 0x3F	; 63
+  74:	8d e0       	ldi	r24, 0x0D	; 13
+  76:	93 e0       	ldi	r25, 0x03	; 3
+  78:	21 50       	subi	r18, 0x01	; 1
+  7a:	80 40       	sbci	r24, 0x00	; 0
+  7c:	90 40       	sbci	r25, 0x00	; 0
+  7e:	e1 f7       	brne	.-8      	; 0x78 <main+0xe>
+  80:	00 c0       	rjmp	.+0      	; 0x82 <main+0x18>
+  82:	00 00       	nop
+  84:	f4 cf       	rjmp	.-24     	; 0x6e <main+0x4>
+
+00000086 <_exit>:
+  86:	f8 94       	cli
+
+00000088 <__stop_program>:
+  88:	ff cf       	rjmp	.-2      	; 0x88 <__stop_program>
